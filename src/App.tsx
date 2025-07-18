@@ -1,9 +1,7 @@
+import Index from "./pages/Index";
+
 const App = () => {
-  return (
-    <div style={{ padding: 50, color: "red", fontSize: 24 }}>
-      ✅ React berhasil render!
-    </div>
-  );
+  return <Index />;
 };
 
 export default App;
