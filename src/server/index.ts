@@ -11,6 +11,7 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
+// Route artikel
 app.use('/api/articles', articleRoutes);
 
 app.listen(PORT, () => {
