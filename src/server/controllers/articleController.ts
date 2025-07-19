@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { articleSchema } from '../validations/articleSchema';
+import { articleSchema } from '../../lib/validations/articleSchema';
 import { supabase } from '../supabase';
 
 export async function createArticle(req: Request, res: Response) {
