@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const articleSchema = z.object({
   title: z.string().min(1),
   slug: z.string(),
-  content: z.any(), // JSON dari Tiptap
+  content: z.any(), // JSON Tiptap
   status: z.enum(['draft', 'published', 'scheduled']),
   scheduled_at: z.string().optional(),
   featured_image_url: z.string().optional(),
