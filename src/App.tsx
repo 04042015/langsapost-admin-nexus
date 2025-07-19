@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import { ErrorBoundary } from "react-error-boundary";
+import NewArticlePage from "./pages/Dashboard/Articles/NewArticlePage";
 
 function ErrorFallback({ error }: { error: Error }) {
   return (
