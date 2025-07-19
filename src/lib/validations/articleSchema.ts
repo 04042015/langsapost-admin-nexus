@@ -1,22 +1,19 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const articleSchema = z.object({
-  title: z.string().min(5),
-  slug: z.string().min(3),
-  content: z.any(), // tiptap JSON
-  featured_image: z.string().url().nullable(),
-  category_id: z.string().uuid(),
-  tags: z.array(z.string().uuid()),
-  status: z.enum(["draft", "scheduled", "published"]),
-  publish_at: z.string().nullable(),
-  breaking: z.boolean(),
-  seo: z.object({
-    title: z.string(),
-    description: z.string(),
-    keywords: z.string(),
-    canonical: z.string(),
-  }),
-  gallery: z.array(z.string().url()),
-  video_url: z.string().url().nullable(),
-  lang: z.enum(["id", "en"]),
+  title: z.string().min(1),
+  slug: z.string(),
+  content: z.any(), // JSON dari Tiptap
+  status: z.enum(['draft', 'published', 'scheduled']),
+  scheduled_at: z.string().optional(),
+  featured_image_url: z.string().optional(),
+  is_breaking: z.boolean(),
+  category_id: z.string(),
+  tag_ids: z.array(z.string()),
+  seo_title: z.string().optional(),
+  seo_description: z.string().optional(),
+  seo_keywords: z.string().optional(),
+  canonical_url: z.string().optional(),
+  show_on_homepage: z.boolean(),
+  author_id: z.string(),
 });
