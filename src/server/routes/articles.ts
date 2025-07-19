@@ -1,6 +1,7 @@
 import express from 'express';
 import { z } from 'zod';
 import { supabase } from '../supabase';
+import { articleSchema } from '@/lib/validations/articleSchema';
 
 const router = express.Router();
 
