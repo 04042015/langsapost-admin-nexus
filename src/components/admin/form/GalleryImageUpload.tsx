@@ -1,11 +1,13 @@
 "use client";
+
+import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // ✅ pastikan komponen ini ada
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Trash2 } from "lucide-react";
 
 interface GalleryImageUploadProps {
-  value?: string[]; // ✅ buat optional, fallback nanti
+  value?: string[]; // array of URL
   onChange: (urls: string[]) => void;
 }
 
@@ -17,12 +19,11 @@ export function GalleryImageUpload({ value = [], onChange }: GalleryImageUploadP
     if (!files?.length) return;
 
     setLoading(true);
-
     const uploadedUrls: string[] = [];
 
     for (const file of Array.from(files)) {
-      // TODO: Upload ke Supabase
-      const url = URL.createObjectURL(file); // sementara pakai blob URL
+      // TODO: Upload ke Supabase di sini
+      const url = URL.createObjectURL(file); // sementara pakai blob preview
       uploadedUrls.push(url);
     }
 
@@ -30,16 +31,47 @@ export function GalleryImageUpload({ value = [], onChange }: GalleryImageUploadP
     onChange([...value, ...uploadedUrls]);
   };
 
+  const handleRemove = (index: number) => {
+    const newImages = [...value];
+    newImages.splice(index, 1);
+    onChange(newImages);
+  };
+
   return (
     <div className="space-y-2">
-      <Label>Galeri Gambar</Label>
-      <Input type="file" accept="image/*" multiple onChange={handleUpload} />
-      <div className="flex flex-wrap gap-2 mt-2">
-        {Array.isArray(value) ? value.map((src, idx) => (
-          <img key={idx} src={src} className="h-20 w-20 object-cover rounded border" />
-        ))}
-      </div>
-      {loading && <p className="text-sm text-muted-foreground">Mengunggah...</p>}
+      <Label htmlFor="gallery-upload">Galeri Gambar</Label>
+      <Input
+        id="gallery-upload"
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleUpload}
+        disabled={loading}
+      />
+
+      {loading && <p className="text-sm text-muted-foreground">Mengunggah gambar...</p>}
+
+      {Array.isArray(value) && value.length > 0 && (
+        <div className="flex flex-wrap gap-3 mt-2">
+          {value.map((src, idx) => (
+            <div key={idx} className="relative group">
+              <img
+                src={src}
+                alt={`Gambar ${idx + 1}`}
+                className="h-24 w-24 object-cover rounded-md border"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemove(idx)}
+                className="absolute top-1 right-1 bg-white/70 hover:bg-red-500 hover:text-white text-red-600 rounded-full p-1 shadow-md transition-opacity opacity-0 group-hover:opacity-100"
+                aria-label="Hapus gambar"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
       }
