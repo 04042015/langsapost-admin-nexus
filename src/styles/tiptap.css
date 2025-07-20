@@ -1,0 +1,140 @@
+/* Editor utama */
+.ProseMirror {
+  min-height: 400px;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 1rem;
+  line-height: 1.75;
+  outline: none;
+}
+
+/* Placeholder */
+.ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Heading */
+.ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+}
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1.25rem 0 1rem;
+}
+.ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1rem 0 0.75rem;
+}
+
+/* Paragraph */
+.ProseMirror p {
+  margin: 0.75rem 0;
+}
+
+/* List */
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+.ProseMirror ul {
+  list-style-type: disc;
+}
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+.ProseMirror li {
+  margin-bottom: 0.25rem;
+}
+
+/* Blockquote */
+.ProseMirror blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+/* Kode (inline & block) */
+.ProseMirror pre {
+  background: #f3f4f6;
+  color: #111827;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-family: monospace;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.ProseMirror code {
+  background: #f3f4f6;
+  color: #111827;
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+  font-size: 0.95em;
+}
+
+/* HR */
+.ProseMirror hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
+}
+
+/* Gambar */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 0.375rem;
+}
+
+/* Iframe / YouTube Embed */
+.ProseMirror iframe {
+  display: block;
+  max-width: 100%;
+  margin: 1.5rem auto;
+  border-radius: 0.5rem;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: auto;
+}
+
+/* Link */
+.ProseMirror a {
+  color: #e63946;
+  text-decoration: underline;
+}
+.ProseMirror a:hover {
+  text-decoration: none;
+}
+
+/* Dark mode */
+.dark .ProseMirror {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+.dark .ProseMirror pre {
+  background: #374151;
+  color: #f3f4f6;
+}
+.dark .ProseMirror code {
+  background: #4b5563;
+  color: #f3f4f6;
+}
+.dark .ProseMirror blockquote {
+  color: #d1d5db;
+  border-left-color: #4b5563;
+  }
