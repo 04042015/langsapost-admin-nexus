@@ -1,27 +1,55 @@
-// src/components/admin/form/CategorySelect.tsx
-import * as React from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Category } from "@/types";
+'use client';
+
+import * as React from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Category } from '@/types';
 
 interface CategorySelectProps {
-  categories: Category[];
+  categories?: Category[]; // optional supaya aman dari undefined
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export const CategorySelect: React.FC<CategorySelectProps> = ({ categories, value, onChange }) => {
+export const CategorySelect: React.FC<CategorySelectProps> = ({
+  categories = [],
+  value,
+  onChange,
+  disabled = false,
+}) => {
+  const isEmpty = categories.length === 0;
+
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Pilih kategori" />
-      </SelectTrigger>
-      <SelectContent>
-        {categories.map((category) => (
-          <SelectItem key={category.id} value={category.id}>
-            {category.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="mb-4">
+      <label className="block text-sm font-medium mb-1">Kategori</label>
+      <Select
+        value={value}
+        onValueChange={onChange}
+        disabled={disabled || isEmpty}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder={isEmpty ? 'Kategori belum tersedia' : 'Pilih kategori'} />
+        </SelectTrigger>
+        <SelectContent>
+          {categories.map((category) => (
+            <SelectItem key={category.id} value={category.id}>
+              {category.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {isEmpty && (
+        <p className="text-sm text-red-500 mt-1">
+          Tidak ada kategori tersedia.
+        </p>
+      )}
+    </div>
   );
 };
