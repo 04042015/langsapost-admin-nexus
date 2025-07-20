@@ -30,10 +30,10 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
     value: tag.id,
   }));
 
-  const selected = value.map(tag => ({
-    label: tag.name,
-    value: tag.id,
-  }));
+  const selected = (value ?? []).map(tag => ({
+  label: tag.name,
+  value: tag.id,
+}));
 
   const handleChange = (selectedOptions: { label: string; value: string }[]) => {
     const selectedTags: TagOption[] = selectedOptions.map(opt => ({
