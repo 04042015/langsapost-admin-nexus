@@ -48,10 +48,10 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
       <label className="block text-sm font-medium mb-1">Tag</label>
       <MultiSelect
         options={options}
-        values={selected}
+        selected={selected}
         onChange={handleChange}
         placeholder="Pilih tag"
       />
     </div>
   );
-      }
+   }
