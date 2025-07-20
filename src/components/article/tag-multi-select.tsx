@@ -1,36 +1,54 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase-client';
-import { MultiSelect } from '@/components/ui/multi-select'; // pastikan kamu punya komponen ini
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase-client";
+import { MultiSelect } from "@/components/ui/multi-select";
 
-interface Tag {
+export interface TagOption {
   id: string;
   name: string;
 }
 
 interface TagMultiSelectProps {
-  values: string[];
-  onChange: (values: string[]) => void;
+  value: TagOption[]; // ✅ ini array of object
+  onChange: (value: TagOption[]) => void;
 }
 
-export function TagMultiSelect({ values, onChange }: TagMultiSelectProps) {
-  const [tags, setTags] = useState<Tag[]>([]);
+export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
+  const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from('tags').select('*').order('name');
+    const fetchTags = async () => {
+      const { data, error } = await supabase.from("tags").select("id, name").order("name");
       if (!error && data) setTags(data);
     };
-    fetchData();
+    fetchTags();
   }, []);
+
+  const options = tags.map(tag => ({
+    label: tag.name,
+    value: tag.id,
+  }));
+
+  const selected = value.map(tag => ({
+    label: tag.name,
+    value: tag.id,
+  }));
+
+  const handleChange = (selectedOptions: { label: string; value: string }[]) => {
+    const selectedTags: TagOption[] = selectedOptions.map(opt => ({
+      id: opt.value,
+      name: opt.label,
+    }));
+    onChange(selectedTags);
+  };
 
   return (
     <MultiSelect
-      options={tags.map(tag => ({ label: tag.name, value: tag.id }))}
-      values={values}
-      onChange={onChange}
+      options={options}
+      values={selected}
+      onChange={handleChange}
       placeholder="Pilih tag"
     />
   );
-}
+    }
