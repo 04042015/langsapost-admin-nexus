@@ -26,7 +26,7 @@ import { createArticle } from "@/actions/article";
 export function ArticleForm() {
   const [saving, setSaving] = useState(false);
   const [lang, setLang] = useState<"id" | "en">("id");
-  const navigate = useNavigate(); // ✅ Ganti useRouter dengan useNavigate
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -47,14 +47,9 @@ export function ArticleForm() {
       gallery: [],
       video_url: null,
       translations: {
-          id: {
-      content: null,
-    },
-      en: {
-      content: null,
-    },
-  },
-},
+        id: { content: null },
+        en: { content: null },
+      },
     },
     validateOnChange: true,
     validateOnBlur: true,
@@ -74,7 +69,7 @@ export function ArticleForm() {
         }
 
         toast.success("Artikel berhasil disimpan!");
-        navigate("/dashboard/articles"); // ✅ Ganti router.push dengan navigate
+        navigate("/dashboard/articles");
       } catch (err) {
         console.error(err);
         toast.error("Terjadi kesalahan saat menyimpan");
@@ -137,7 +132,9 @@ export function ArticleForm() {
           <div>
             <FeaturedImageUpload
               value={formik.values.featured_image_url}
-              onChange={(url) => formik.setFieldValue("featured_image_url", url)}
+              onChange={(url) =>
+                formik.setFieldValue("featured_image_url", url)
+              }
             />
           </div>
 
@@ -209,7 +206,9 @@ export function ArticleForm() {
             <Label>Tampilkan di Beranda</Label>
             <Switch
               checked={formik.values.show_on_homepage}
-              onCheckedChange={(v) => formik.setFieldValue("show_on_homepage", v)}
+              onCheckedChange={(v) =>
+                formik.setFieldValue("show_on_homepage", v)
+              }
             />
           </div>
 
@@ -238,4 +237,4 @@ export function ArticleForm() {
       </MultiLangTabs>
     </form>
   );
-        }
+      }
