@@ -1,24 +1,29 @@
 // src/components/admin/form/MultiLangTabs.tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+'use client';
+
+import * as React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface MultiLangTabsProps {
-  lang: "id" | "en";
-  onLangChange: (lang: "id" | "en") => void;
+  lang: 'id' | 'en';
+  onLangChange: (lang: 'id' | 'en') => void;
   children: React.ReactNode;
 }
 
-export function MultiLangTabs({ lang, onLangChange, children }: MultiLangTabsProps) {
+export const MultiLangTabs: React.FC<MultiLangTabsProps> = ({
+  lang,
+  onLangChange,
+  children,
+}) => {
   return (
-    <div className="space-y-4">
-      <Tabs value={lang} onValueChange={(v) => onLangChange(v as "id" | "en")}>
+    <div className="mb-4">
+      <Tabs value={lang} onValueChange={(val) => onLangChange(val as 'id' | 'en')}>
         <TabsList>
           <TabsTrigger value="id">Bahasa Indonesia</TabsTrigger>
           <TabsTrigger value="en">English</TabsTrigger>
         </TabsList>
       </Tabs>
-
-      {/* Konten utamanya */}
-      <div>{children}</div>
+      <div className="mt-4">{children}</div>
     </div>
   );
-}
+};
