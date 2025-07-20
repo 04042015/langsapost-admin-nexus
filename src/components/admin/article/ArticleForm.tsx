@@ -52,7 +52,7 @@ export function ArticleForm() {
       content: null,
       featured_image_url: null,
       category_id: "",
-      tag_ids: [],
+      tag_ids: [] as TagOption[],
       status: "draft",
       scheduled_at: null,
       is_breaking: false,
