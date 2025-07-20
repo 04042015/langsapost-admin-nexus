@@ -3,15 +3,15 @@
 import * as React from 'react';
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@/components/ui/select';
 import { Category } from '@/types';
 
 interface CategorySelectProps {
-  categories?: Category[]; // optional supaya aman dari undefined
+  categories?: Category[];
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
@@ -34,7 +34,9 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
         disabled={disabled || isEmpty}
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={isEmpty ? 'Kategori belum tersedia' : 'Pilih kategori'} />
+          <SelectValue
+            placeholder={isEmpty ? 'Kategori belum tersedia' : 'Pilih kategori'}
+          />
         </SelectTrigger>
         <SelectContent>
           {categories.map((category) => (
