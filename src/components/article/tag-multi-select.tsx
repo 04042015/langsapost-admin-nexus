@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -10,7 +8,7 @@ export interface TagOption {
 }
 
 interface TagMultiSelectProps {
-  value: TagOption[]; // ✅ ini array of object
+  value: TagOption[];
   onChange: (value: TagOption[]) => void;
 }
 
@@ -30,10 +28,12 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
     value: tag.id,
   }));
 
-  const selected = value.map(tag => ({
-    label: tag.name,
-    value: tag.id,
-  }));
+  const selected = Array.isArray(value)
+    ? value.map(tag => ({
+        label: tag.name,
+        value: tag.id,
+      }))
+    : [];
 
   const handleChange = (selectedOptions: { label: string; value: string }[]) => {
     const selectedTags: TagOption[] = selectedOptions.map(opt => ({
@@ -46,9 +46,9 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
   return (
     <MultiSelect
       options={options}
-      values={selected}
+      selected={selected} // ✅ GANTI DARI values → selected
       onChange={handleChange}
       placeholder="Pilih tag"
     />
   );
-    }
+}
