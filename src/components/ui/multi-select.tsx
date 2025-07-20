@@ -13,7 +13,7 @@ type Option = {
 
 type MultiSelectProps = {
   options: Option[];
-  selected: Option[];
+  selected?: Option[]; // jadikan opsional
   onChange: (selected: Option[]) => void;
   placeholder?: string;
   isLoading?: boolean;
@@ -21,7 +21,7 @@ type MultiSelectProps = {
 
 export function MultiSelect({
   options,
-  selected,
+  selected = [], // default aman
   onChange,
   placeholder = 'Pilih opsi...',
   isLoading = false,
@@ -37,9 +37,10 @@ export function MultiSelect({
     }
   };
 
-  const isSelected = (option: Option) => selected.some((item) => item.value === option.value);
+  const isSelected = (option: Option) =>
+    selected.some((item) => item.value === option.value);
 
-  const displayLabel = selected.length > 0
+  const displayLabel = (selected?.length ?? 0) > 0
     ? selected.map((item) => item.label).join(', ')
     : placeholder;
 
@@ -53,7 +54,7 @@ export function MultiSelect({
             'hover:border-primary focus:outline-none focus:ring-1 focus:ring-ring'
           )}
         >
-          <span className={cn('truncate', selected.length === 0 && 'text-muted-foreground')}>
+          <span className={cn('truncate', (selected?.length ?? 0) === 0 && 'text-muted-foreground')}>
             {displayLabel}
           </span>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -86,4 +87,4 @@ export function MultiSelect({
       </PopoverContent>
     </Popover>
   );
-        }
+      }
