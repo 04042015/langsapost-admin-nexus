@@ -10,21 +10,31 @@ export type TagOption = {
 };
 
 type TagMultiSelectProps = {
-  value: TagOption[];
+  value?: TagOption[]; // optional untuk handle undefined awal
   onChange: (value: TagOption[]) => void;
 };
 
-export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
+export function TagMultiSelect({ value = [], onChange }: TagMultiSelectProps) {
   const [tags, setTags] = useState<TagOption[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTags = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('tags').select('id, name');
-      if (!error && data) {
+      setError(null);
+      const { data, error } = await supabase
+        .from('tags')
+        .select('id, name')
+        .order('name', { ascending: true });
+
+      if (error) {
+        setError('Gagal memuat tag.');
+        console.error('Fetch tags error:', error);
+      } else if (data) {
         setTags(data);
       }
+
       setLoading(false);
     };
 
@@ -32,11 +42,18 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
   }, []);
 
   return (
-    <div>
+    <div className="mb-4">
       <label className="block text-sm font-medium mb-1">Tags</label>
+
       <MultiSelect
-        options={tags.map(tag => ({ label: tag.name, value: tag.id }))}
-        selected={value.map(tag => ({ label: tag.name, value: tag.id }))}
+        options={tags.map(tag => ({
+          label: tag.name,
+          value: tag.id,
+        }))}
+        selected={value.map(tag => ({
+          label: tag.name,
+          value: tag.id,
+        }))}
         onChange={(selectedOptions) => {
           const selectedTags: TagOption[] = selectedOptions.map(opt => ({
             id: opt.value,
@@ -45,8 +62,15 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
           onChange(selectedTags);
         }}
         isLoading={loading}
-        placeholder="Pilih tag..."
+        placeholder={loading ? 'Memuat tag...' : 'Pilih tag...'}
+        disabled={loading || tags.length === 0}
       />
+
+      {error && (
+        <p className="text-sm text-red-500 mt-1">
+          {error}
+        </p>
+      )}
     </div>
   );
-          }
+                                                                }
