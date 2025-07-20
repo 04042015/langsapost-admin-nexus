@@ -1,4 +1,4 @@
-"use client";
+// src/components/admin/form/MultiLangTabs.tsx
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface MultiLangTabsProps {
@@ -9,12 +9,16 @@ interface MultiLangTabsProps {
 
 export function MultiLangTabs({ lang, onLangChange, children }: MultiLangTabsProps) {
   return (
-    <Tabs value={lang} onValueChange={(val) => onLangChange(val as "id" | "en")}>
-      <TabsList className="mb-2">
-        <TabsTrigger value="id">Bahasa Indonesia</TabsTrigger>
-        <TabsTrigger value="en">English</TabsTrigger>
-      </TabsList>
-      <TabsContent value={lang}>{children}</TabsContent>
-    </Tabs>
+    <div className="space-y-4">
+      <Tabs value={lang} onValueChange={(v) => onLangChange(v as "id" | "en")}>
+        <TabsList>
+          <TabsTrigger value="id">Bahasa Indonesia</TabsTrigger>
+          <TabsTrigger value="en">English</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {/* Konten utamanya */}
+      <div>{children}</div>
+    </div>
   );
 }
