@@ -46,6 +46,15 @@ export function ArticleForm() {
       show_on_homepage: false,
       gallery: [],
       video_url: null,
+      translations: {
+          id: {
+      content: null,
+    },
+      en: {
+      content: null,
+    },
+  },
+},
     },
     validateOnChange: true,
     validateOnBlur: true,
