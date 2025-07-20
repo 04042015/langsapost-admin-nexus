@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/Sidebar'; 
 import { Button } from '@/components/ui/button'; 
 import { Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom'; // ✅ Tambahkan ini
 
 interface DashboardLayoutProps { 
   children: React.ReactNode; 
@@ -67,9 +68,10 @@ return (
               </span> 
             </div> 
           </div> 
-        </header> <div className="flex-1 p-6"> 
-          {children} 
-        </div> 
+        </header> 
+        <div className="flex-1 p-6">
+          <Outlet /> {/* ✅ Ini akan render komponen nested seperti Dashboard & NewArticlePage */}
+        </div>
       </main> 
     </div> 
   </SidebarProvider> 
