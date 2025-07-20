@@ -1,40 +1,40 @@
-'use client'
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+import Image from "@tiptap/extension-image";
+import Youtube from "@tiptap/extension-youtube";
+import Link from "@tiptap/extension-link";
+import { JSONContent } from "@tiptap/core";
 
-import React from 'react'
-import { EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Placeholder from '@tiptap/extension-placeholder'
-import Image from '@tiptap/extension-image'
+import "@/styles/tiptap.css";
 
-type Props = {
-  content: string
-  onChange: (json: string) => void
+interface ArticleEditorProps {
+  value: JSONContent | null;
+  onChange: (value: JSONContent) => void;
 }
 
-export const ArticleEditor = ({ content, onChange }: Props) => {
+export function ArticleEditor({ value, onChange }: ArticleEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
       Placeholder.configure({
-        placeholder: 'Tulis isi artikel di sini...',
+        placeholder: "Tulis isi artikel di sini...",
+      }),
+      Image,
+      Youtube.configure({
+        width: 640,
+        height: 360,
+      }),
+      Link.configure({
+        openOnClick: false,
       }),
     ],
-    content,
-    editorProps: {
-      attributes: {
-        class:
-          'prose max-w-none dark:prose-invert outline-none min-h-[300px] p-4 bg-white dark:bg-neutral-900 rounded-md border border-gray-300 dark:border-neutral-700',
-      },
-    },
+    content: value || "",
     onUpdate: ({ editor }) => {
-      onChange(JSON.stringify(editor.getJSON()))
+      const json = editor.getJSON();
+      onChange(json);
     },
-  })
+  });
 
-  return (
-    <div>
-      <EditorContent editor={editor} />
-    </div>
-  )
-                              }
+  return <EditorContent editor={editor} className="prose max-w-full" />;
+      }
