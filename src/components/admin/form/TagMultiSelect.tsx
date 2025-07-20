@@ -1,50 +1,52 @@
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { MultiSelect } from '@/components/ui/multi-select'
+import { useFormikContext } from 'formik';
+import { useEffect, useState } from 'react';
+import { supabase } from "@/lib/supabase";
+import { MultiSelect } from '@/components/ui/multi-select';
 
 type TagOption = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 
 interface TagMultiSelectProps {
-  selected: string[] // tagIds
-  onChange: (selectedIds: string[]) => void
+  selected?: string[]; // boleh undefined
+  onChange: (selectedIds: string[]) => void;
 }
 
-export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
-  const [tags, setTags] = useState<TagOption[]>([])
+export function TagMultiSelect({ selected = [], onChange }: TagMultiSelectProps) {
+  const formik = useFormikContext<any>();
+  const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
     const fetchTags = async () => {
       const { data, error } = await supabase
         .from('tags')
         .select('id, name')
-        .order('name')
+        .order('name');
 
       if (!error && data) {
-        setTags(data)
+        setTags(data);
       }
-    }
-    fetchTags()
-  }, [])
+    };
+    fetchTags();
+  }, []);
 
   const options = tags.map((tag) => ({
     label: tag.name,
     value: tag.id,
-  }))
+  }));
 
-  const selectedOptions = selected.map((tagId: string) => {
-    const found = tags.find((t) => t.id === tagId)
+  const selectedOptions = selected.map((tagId) => {
+    const found = tags.find((t) => t.id === tagId);
     return found
       ? { label: found.name, value: found.id }
-      : { label: tagId, value: tagId }
-  })
+      : { label: tagId, value: tagId };
+  });
 
   const handleChange = (selectedOptions: { label: string; value: string }[]) => {
-    const tagIds = selectedOptions.map((opt) => opt.value)
-    onChange(tagIds)
-  }
+    const tagIds = selectedOptions.map((opt) => opt.value);
+    onChange(tagIds);
+  };
 
   return (
     <div className="mb-4">
@@ -56,5 +58,5 @@ export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
         placeholder="Pilih tag"
       />
     </div>
-  )
+  );
       }
