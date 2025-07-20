@@ -25,6 +25,8 @@ import { createArticle } from "@/actions/article";
 import { supabase } from "@/lib/supabase";
 import { Category } from "@/types";
 
+import type { TagOption } from "@/components/admin/form/tag-multi-select";
+
 export function ArticleForm() {
   const [saving, setSaving] = useState(false);
   const [lang, setLang] = useState<"id" | "en">("id");
