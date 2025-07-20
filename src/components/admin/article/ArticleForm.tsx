@@ -22,11 +22,28 @@ import { PreviewButton } from "@/components/admin/form/PreviewButton";
 
 import { toast } from "sonner";
 import { createArticle } from "@/actions/article";
+import { supabase } from "@/lib/supabase";
+import { Category } from "@/types";
 
 export function ArticleForm() {
   const [saving, setSaving] = useState(false);
   const [lang, setLang] = useState<"id" | "en">("id");
   const navigate = useNavigate();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      const { data, error } = await supabase.from("categories").select("id, name");
+      if (!error && data) {
+        setCategories(data);
+      }
+      setLoadingCategories(false);
+    };
+    fetchCategories();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -58,7 +75,7 @@ export function ArticleForm() {
         const payload = {
           ...values,
           lang,
-          author_id: "admin-123", // TODO: Ganti dengan Supabase session user ID
+          author_id: "admin-123", // Ganti dengan ID user login
         };
 
         const res = await createArticle(payload);
@@ -77,7 +94,6 @@ export function ArticleForm() {
     },
   });
 
-  // Slug otomatis
   useEffect(() => {
     if (formik.values.title && !formik.values.slug) {
       const slug = formik.values.title
@@ -88,7 +104,6 @@ export function ArticleForm() {
     }
   }, [formik.values.title]);
 
-  // Auto-save ke localStorage
   useEffect(() => {
     const interval = setInterval(() => {
       setSaving(true);
@@ -140,6 +155,7 @@ export function ArticleForm() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <CategorySelect
+              categories={categories}
               value={formik.values.category_id}
               onChange={(v) => formik.setFieldValue("category_id", v)}
             />
@@ -237,4 +253,4 @@ export function ArticleForm() {
       </MultiLangTabs>
     </form>
   );
-      }
+            }
