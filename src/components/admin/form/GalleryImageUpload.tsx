@@ -35,7 +35,7 @@ export function GalleryImageUpload({ value = [], onChange }: GalleryImageUploadP
       <Label>Galeri Gambar</Label>
       <Input type="file" accept="image/*" multiple onChange={handleUpload} />
       <div className="flex flex-wrap gap-2 mt-2">
-        {(value ?? []).map((src, idx) => (
+        {Array.isArray(value) ? value.map((src, idx) => (
           <img key={idx} src={src} className="h-20 w-20 object-cover rounded border" />
         ))}
       </div>
