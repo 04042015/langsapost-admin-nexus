@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -28,7 +26,7 @@ import { createArticle } from "@/actions/article";
 export function ArticleForm() {
   const [saving, setSaving] = useState(false);
   const [lang, setLang] = useState<"id" | "en">("id");
-  const router = useRouter();
+  const navigate = useNavigate(); // ✅ Ganti useRouter dengan useNavigate
 
   const formik = useFormik({
     initialValues: {
@@ -56,7 +54,7 @@ export function ArticleForm() {
         const payload = {
           ...values,
           lang,
-          author_id: "admin-123", // Ganti dengan Supabase session user ID nanti
+          author_id: "admin-123", // TODO: Ganti dengan Supabase session user ID
         };
 
         const res = await createArticle(payload);
@@ -67,7 +65,7 @@ export function ArticleForm() {
         }
 
         toast.success("Artikel berhasil disimpan!");
-        router.push("/dashboard/articles");
+        navigate("/dashboard/articles"); // ✅ Ganti router.push dengan navigate
       } catch (err) {
         console.error(err);
         toast.error("Terjadi kesalahan saat menyimpan");
@@ -101,7 +99,6 @@ export function ArticleForm() {
     <form onSubmit={formik.handleSubmit} className="space-y-8">
       <MultiLangTabs lang={lang} onLangChange={setLang}>
         <div className="space-y-4">
-          {/* Judul */}
           <div>
             <Label>Judul Artikel</Label>
             <Input
@@ -112,7 +109,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Slug */}
           <div>
             <Label>Slug (URL)</Label>
             <Input
@@ -122,7 +118,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Editor */}
           <div>
             <ArticleEditor
               value={formik.values.content}
@@ -130,7 +125,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Gambar Unggulan */}
           <div>
             <FeaturedImageUpload
               value={formik.values.featured_image_url}
@@ -138,7 +132,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Kategori dan Tag */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <CategorySelect
               value={formik.values.category_id}
@@ -150,7 +143,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Status & Breaking */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ArticleStatusSelect
               value={formik.values.status}
@@ -164,7 +156,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* SEO */}
           <div className="space-y-2">
             <Label>SEO Title</Label>
             <Input
@@ -195,7 +186,6 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Galeri & Video */}
           <GalleryImageUpload
             value={formik.values.gallery}
             onChange={(g) => formik.setFieldValue("gallery", g)}
@@ -206,7 +196,6 @@ export function ArticleForm() {
             onChange={(v) => formik.setFieldValue("video_url", v)}
           />
 
-          {/* Tampilkan di Homepage */}
           <div className="flex items-center gap-2">
             <Label>Tampilkan di Beranda</Label>
             <Switch
@@ -215,13 +204,11 @@ export function ArticleForm() {
             />
           </div>
 
-          {/* Preview & Autosave */}
           <div className="flex justify-between items-center">
             <AutoSaveIndicator saving={saving} />
             <PreviewButton onClick={() => toast.info("Preview coming soon")} />
           </div>
 
-          {/* Tombol Simpan */}
           <div className="flex justify-between gap-2">
             <Button type="submit" className="w-full">
               Simpan Artikel
@@ -242,4 +229,4 @@ export function ArticleForm() {
       </MultiLangTabs>
     </form>
   );
-    }
+        }
