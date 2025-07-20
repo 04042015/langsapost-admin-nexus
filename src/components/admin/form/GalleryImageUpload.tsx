@@ -42,4 +42,4 @@ export function GalleryImageUpload({ value = [], onChange }: GalleryImageUploadP
       {loading && <p className="text-sm text-muted-foreground">Mengunggah...</p>}
     </div>
   );
-        }
+      }
