@@ -20,7 +20,10 @@ const articleSchema = z.object({
   slug: z.string().min(3),
   content: z.string().min(10), // JSON string from Tiptap
   category_id: z.string(),
-  tags: z.array(z.string()),
+  tags: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+  })),
   status: z.enum(['draft', 'scheduled', 'published']),
   scheduled_at: z.string().optional(), // ISO date string
   is_breaking: z.boolean(),
@@ -92,9 +95,9 @@ export function ArticleForm() {
 
         // Simpan tags ke table `article_tags`
         await supabase.from('article_tags').insert(
-          values.tags.map((tag_id) => ({
+          values.tags.map((tag) => ({
             article_id: data.id,
-            tag_id,
+            tag_id: tag.id,
           }))
         );
 
@@ -230,4 +233,4 @@ export function ArticleForm() {
       </div>
     </form>
   );
-  }
+}
