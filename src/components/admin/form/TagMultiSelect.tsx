@@ -1,20 +1,7 @@
-'use client';
+import { useFormikContext } from 'formik';
 
-import { useEffect, useState } from "react";
-import { supabase } from '@/lib/supabase'
-import { MultiSelect } from "@/components/ui/multi-select";
-
-export interface TagOption {
-  id: string;
-  name: string;
-}
-
-interface TagMultiSelectProps {
-  value?: TagOption[]; // optional untuk aman
-  onChange: (value: TagOption[]) => void;
-}
-
-export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
+export function TagMultiSelect() {
+  const { values, setFieldValue } = useFormikContext<any>();
   const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
@@ -30,7 +17,7 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
     value: tag.id,
   }));
 
-  const selected = (value ?? []).map(tag => ({
+  const selected = (values.tag_ids ?? []).map(tag => ({
     label: tag.name,
     value: tag.id,
   }));
@@ -40,7 +27,7 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
       id: opt.value,
       name: opt.label,
     }));
-    onChange(selectedTags);
+    setFieldValue("tag_ids", selectedTags);
   };
 
   return (
@@ -48,10 +35,10 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
       <label className="block text-sm font-medium mb-1">Tag</label>
       <MultiSelect
         options={options}
-        selected={selected}
+        values={selected}
         onChange={handleChange}
         placeholder="Pilih tag"
       />
     </div>
   );
-   }
+}
