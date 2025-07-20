@@ -10,7 +10,7 @@ export interface TagOption {
 }
 
 interface TagMultiSelectProps {
-  value: TagOption[];
+  value?: TagOption[]; // optional untuk aman
   onChange: (value: TagOption[]) => void;
 }
 
@@ -31,9 +31,9 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
   }));
 
   const selected = (value ?? []).map(tag => ({
-  label: tag.name,
-  value: tag.id,
-}));
+    label: tag.name,
+    value: tag.id,
+  }));
 
   const handleChange = (selectedOptions: { label: string; value: string }[]) => {
     const selectedTags: TagOption[] = selectedOptions.map(opt => ({
@@ -54,4 +54,4 @@ export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
       />
     </div>
   );
-    }
+      }
