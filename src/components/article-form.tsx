@@ -152,9 +152,12 @@ export function ArticleForm() {
       />
 
       <TagMultiSelect
-        selected={formik.values.tags}
-        onChange={(val) => formik.setFieldValue('tags', val)}
-      />
+  selected={Array.isArray(formik.values.tags) ? formik.values.tags.map(tag => tag.id) : []}
+  onChange={(val) => {
+    const newTags = val.map((id) => ({ id, name: '' }));
+    formik.setFieldValue('tags', newTags);
+  }}
+/>
 
       <ArticleStatusSelect
         status={formik.values.status}
