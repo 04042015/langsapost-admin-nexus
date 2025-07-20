@@ -73,7 +73,6 @@
     "@tiptap/extension-history": "^2.0.2",
     "@tiptap/extension-horizontal-rule": "^2.0.2",
     "@tiptap/extension-image": "^2.0.4",
-    "@tiptap/extension-image-resize": "^1.3.0",
     "@tiptap/extension-italic": "^2.0.3",
     "@tiptap/extension-link": "^2.0.4",
     "@tiptap/extension-list-item": "^2.0.2",
