@@ -149,7 +149,7 @@ export function ArticleForm() {
       />
 
       <TagMultiSelect
-        value={formik.values.tags}
+        selected={formik.values.tags}
         onChange={(val) => formik.setFieldValue('tags', val)}
       />
 
