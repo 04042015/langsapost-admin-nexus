@@ -74,7 +74,8 @@ export function ArticleForm() {
       try {
         const payload = {
           ...values,
-          lang,
+  tag_ids: values.tag_ids.map(tag => tag.id), // <--- ubah di sini
+  lang,
           author_id: "admin-123", // Ganti dengan ID user login
         };
 
