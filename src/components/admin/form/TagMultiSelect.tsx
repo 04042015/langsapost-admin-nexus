@@ -1,56 +1,42 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { MultiSelect, OptionType } from '@/components/ui/multi-select';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase-client";
+import { MultiSelect } from "@/components/ui/multi-select";
 
-export type TagOption = {
+export interface TagOption {
   id: string;
   name: string;
-};
+}
 
 interface TagMultiSelectProps {
   value: TagOption[];
   onChange: (value: TagOption[]) => void;
-  disabled?: boolean;
 }
 
-export function TagMultiSelect({ value, onChange, disabled = false }: TagMultiSelectProps) {
-  const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function TagMultiSelect({ value, onChange }: TagMultiSelectProps) {
+  const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
     const fetchTags = async () => {
-      setLoading(true);
-      setError(null);
-
-      const { data, error } = await supabase.from('tags').select('id, name');
-      if (error) {
-        console.error('Gagal memuat tags:', error.message);
-        setError('Gagal memuat tags');
-      } else {
-        setTagOptions(data);
-      }
-
-      setLoading(false);
+      const { data, error } = await supabase.from("tags").select("id, name").order("name");
+      if (!error && data) setTags(data);
     };
-
     fetchTags();
   }, []);
 
-  const options: OptionType[] = tagOptions.map(tag => ({
+  const options = tags.map(tag => ({
     label: tag.name,
     value: tag.id,
   }));
 
-  const selected: OptionType[] = value.map(tag => ({
+  const selected = value.map(tag => ({
     label: tag.name,
     value: tag.id,
   }));
 
-  const handleChange = (selectedOptions: OptionType[]) => {
-    const selectedTags = selectedOptions.map(opt => ({
+  const handleChange = (selectedOptions: { label: string; value: string }[]) => {
+    const selectedTags: TagOption[] = selectedOptions.map(opt => ({
       id: opt.value,
       name: opt.label,
     }));
@@ -59,16 +45,13 @@ export function TagMultiSelect({ value, onChange, disabled = false }: TagMultiSe
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium mb-1">Tags</label>
+      <label className="block text-sm font-medium mb-1">Tag</label>
       <MultiSelect
         options={options}
-        selected={selected}
+        values={selected}
         onChange={handleChange}
-        isLoading={loading}
-        disabled={disabled}
-        placeholder="Pilih tag..."
+        placeholder="Pilih tag"
       />
-      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   );
-        }
+    }
