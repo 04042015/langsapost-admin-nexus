@@ -1,61 +1,60 @@
-import { useFormikContext } from 'formik';
-import { useEffect, useState } from 'react';
-import { supabase } from "@/lib/supabase";
-import { MultiSelect } from '@/components/ui/multi-select';
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+import { MultiSelect } from '@/components/ui/multi-select'
 
 type TagOption = {
-  id: string;
-  name: string;
-};
+  id: string
+  name: string
+}
 
-export function TagMultiSelect() {
-  const formik = useFormikContext<any>();
+interface TagMultiSelectProps {
+  selected: string[] // tagIds
+  onChange: (selectedIds: string[]) => void
+}
 
-  if (!formik) return null;
-
-  const { values, setFieldValue } = formik;
-  const [tags, setTags] = useState<TagOption[]>([]);
+export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
+  const [tags, setTags] = useState<TagOption[]>([])
 
   useEffect(() => {
     const fetchTags = async () => {
       const { data, error } = await supabase
         .from('tags')
         .select('id, name')
-        .order('name');
+        .order('name')
 
       if (!error && data) {
-        setTags(data);
+        setTags(data)
       }
-    };
-    fetchTags();
-  }, []);
+    }
+    fetchTags()
+  }, [])
 
   const options = tags.map((tag) => ({
     label: tag.name,
     value: tag.id,
-  }));
+  }))
 
-  const selected = (values.tags ?? []).map((tagId: string) => {
-    const found = tags.find((t) => t.id === tagId);
+  const selectedOptions = selected.map((tagId: string) => {
+    const found = tags.find((t) => t.id === tagId)
     return found
       ? { label: found.name, value: found.id }
-      : { label: tagId, value: tagId };
-  });
+      : { label: tagId, value: tagId }
+  })
 
   const handleChange = (selectedOptions: { label: string; value: string }[]) => {
-    const tagIds = selectedOptions.map((opt) => opt.value);
-    setFieldValue('tags', tagIds);
-  };
+    const tagIds = selectedOptions.map((opt) => opt.value)
+    onChange(tagIds)
+  }
 
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium mb-1">Tag</label>
       <MultiSelect
         options={options}
-        selected={selected}
+        selected={selectedOptions}
         onChange={handleChange}
         placeholder="Pilih tag"
       />
     </div>
-  );
-}
+  )
+      }
