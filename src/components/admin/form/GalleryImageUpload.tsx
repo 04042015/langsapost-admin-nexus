@@ -1,15 +1,15 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input"; // ✅ pastikan komponen ini ada
 import { useState } from "react";
 
 interface GalleryImageUploadProps {
-  value: string[];
+  value?: string[]; // ✅ buat optional, fallback nanti
   onChange: (urls: string[]) => void;
 }
 
-export function GalleryImageUpload({ value, onChange }: GalleryImageUploadProps) {
+export function GalleryImageUpload({ value = [], onChange }: GalleryImageUploadProps) {
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +35,11 @@ export function GalleryImageUpload({ value, onChange }: GalleryImageUploadProps)
       <Label>Galeri Gambar</Label>
       <Input type="file" accept="image/*" multiple onChange={handleUpload} />
       <div className="flex flex-wrap gap-2 mt-2">
-        {value.map((src, idx) => (
+        {(value ?? []).map((src, idx) => (
           <img key={idx} src={src} className="h-20 w-20 object-cover rounded border" />
         ))}
       </div>
       {loading && <p className="text-sm text-muted-foreground">Mengunggah...</p>}
     </div>
   );
-}
+        }
