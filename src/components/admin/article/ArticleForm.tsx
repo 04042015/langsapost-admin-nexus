@@ -37,13 +37,22 @@ export function ArticleForm() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoadingCategories(true);
-      const { data, error } = await supabase.from("categories").select("id, name");
-      if (!error && data) {
-        setCategories(data);
-      }
-      setLoadingCategories(false);
-    };
+  setLoadingCategories(true);
+  const { data, error } = await supabase
+    .from("categories")
+    .select("uuid, name");
+
+  if (!error && data) {
+    const formatted = data.map((cat) => ({
+      id: cat.uuid, // rename
+      name: cat.name,
+    }));
+    setCategories(formatted);
+  } else {
+    console.error("Gagal ambil kategori:", error);
+  }
+  setLoadingCategories(false);
+};
     fetchCategories();
   }, []);
 
