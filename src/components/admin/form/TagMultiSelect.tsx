@@ -1,60 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { MultiSelect } from '@/components/ui/multi-select';
+import { MultiSelect } from "@/components/ui/multi-select";
 
-type TagOption = {
+export interface TagOption {
   id: string;
   name: string;
-};
-
+}
 interface TagMultiSelectProps {
-  selected?: string[]; // boleh undefined
-  onChange: (selectedIds: string[]) => void;
+  selected: TagOption[]; // array objek
+  onChange: (tags: TagOption[]) => void;
 }
 
-export function TagMultiSelect({ selected = [], onChange }: TagMultiSelectProps) {
+export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
   const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
-    const fetchTags = async () => {
-      const { data, error } = await supabase
-        .from('tags')
-        .select('id, name')
-        .order('name');
-
-      if (!error && data) {
-        setTags(data);
-      }
-    };
-    fetchTags();
+    supabase.from("tags").select("id, name")
+      .order("name")
+      .then(({ data }) => data && setTags(data));
   }, []);
 
-  const options = tags.map((tag) => ({
+  const options = tags.map(tag => ({
     label: tag.name,
     value: tag.id,
   }));
 
-  const selectedOptions = selected.map((tagId) => {
-    const found = tags.find((t) => t.id === tagId);
-    return found
-      ? { label: found.name, value: found.id }
-      : { label: tagId, value: tagId };
-  });
+  const selectedOptions = selected.map(t => ({
+    label: t.name,
+    value: t.id,
+  }));
 
-  const handleChange = (selectedOptions: { label: string; value: string }[]) => {
-    const tagIds = selectedOptions.map((opt) => opt.value);
-    onChange(tagIds);
-  };
+  function handleMultiChange(sel: { label: string; value: string }[]) {
+    const arr = sel.map(s => {
+      const found = tags.find(t => t.id === s.value);
+      return found ?? { id: s.value, name: s.label };
+    });
+    onChange(arr);
+  }
 
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium mb-1">Tag</label>
-      <MultiSelect
-        options={options}
-        selected={selectedOptions}
-        onChange={handleChange}
-        placeholder="Pilih tag"
-      />
-    </div>
+    <MultiSelect
+      options={options}
+      selected={selectedOptions}
+      onChange={handleMultiChange}
+      placeholder="Pilih tag"
+    />
   );
-}
+      }
