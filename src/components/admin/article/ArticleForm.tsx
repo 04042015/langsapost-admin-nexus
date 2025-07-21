@@ -163,8 +163,8 @@ export function ArticleForm() {
               onChange={(v) => formik.setFieldValue("category_id", v)}
             />
             <TagMultiSelect
-              value={formik.values.tag_ids}
-              onChange={(v) => formik.setFieldValue("tag_ids", v)}
+                selected={formik.values.tag_ids}
+                onChange={(newTags) => formik.setFieldValue("tag_ids", newTags)}
             />
           </div>
 
