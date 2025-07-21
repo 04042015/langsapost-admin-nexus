@@ -1,34 +1,38 @@
-import { useState } from "react"
-import { useFormikContext } from "formik"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
 interface Props {
-  name: string
+  value: File | null
+  onChange: (file: File | null) => void
   label?: string
   helperText?: string
 }
 
-export function FeaturedImageUpload({ name, label = "Gambar Unggulan", helperText }: Props) {
-  const { setFieldValue, values } = useFormikContext<any>()
-  const [preview, setPreview] = useState<string | null>(values[name] || null)
+export function FeaturedImageUpload({ value, onChange, label = "Gambar Unggulan", helperText }: Props) {
+  const [preview, setPreview] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (value) {
+      const url = URL.createObjectURL(value)
+      setPreview(url)
+      return () => URL.revokeObjectURL(url)
+    } else {
+      setPreview(null)
+    }
+  }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
-    const previewURL = URL.createObjectURL(file)
-    setPreview(previewURL)
-
-    // TODO: Upload ke Supabase (sementara hanya set preview + simpan file)
-    setFieldValue(name, file)
+    onChange(file)
   }
 
   return (
     <div className="grid gap-2">
-      {label && <Label htmlFor={name}>{label}</Label>}
+      {label && <Label htmlFor="featured">{label}</Label>}
       {preview && (
         <img
           src={preview}
@@ -36,10 +40,10 @@ export function FeaturedImageUpload({ name, label = "Gambar Unggulan", helperTex
           className="w-full max-h-60 object-cover rounded-lg border"
         />
       )}
-      <Input type="file" accept="image/*" onChange={handleChange} />
+      <Input id="featured" type="file" accept="image/*" onChange={handleChange} />
       {helperText && (
         <p className="text-sm text-muted-foreground">{helperText}</p>
       )}
     </div>
   )
-  }
+        }
