@@ -149,10 +149,8 @@ export function ArticleForm() {
 
           <div>
             <FeaturedImageUpload
-              value={formik.values.featured_image_url}
-              onChange={(url) =>
-                formik.setFieldValue("featured_image_url", url)
-              }
+              value={values.featuredImage}
+              onChange={(file) => setFieldValue("featuredImage", file)}
             />
           </div>
 
