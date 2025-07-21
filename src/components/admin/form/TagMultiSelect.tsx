@@ -1,23 +1,33 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { supabase } from "@/lib/supabase";
 import { MultiSelect } from "@/components/ui/multi-select";
 
-export interface TagOption {
+type TagOption = {
   id: string;
   name: string;
-}
+};
+
 interface TagMultiSelectProps {
-  selected: TagOption[]; // array objek
-  onChange: (tags: TagOption[]) => void;
+  selected?: string[]; // ID list saja
+  onChange: (selectedIds: string[]) => void;
 }
 
-export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
+export function TagMultiSelect({ selected = [], onChange }: TagMultiSelectProps) {
   const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
-    supabase.from("tags").select("id, name")
-      .order("name")
-      .then(({ data }) => data && setTags(data));
+    const fetchTags = async () => {
+      const { data, error } = await supabase
+        .from("tags")
+        .select("id, name")
+        .order("name");
+
+      if (!error && data) {
+        setTags(data);
+      }
+    };
+
+    fetchTags();
   }, []);
 
   const options = tags.map(tag => ({
@@ -25,25 +35,27 @@ export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
     value: tag.id,
   }));
 
-  const selectedOptions = selected.map(t => ({
-    label: t.name,
-    value: t.id,
-  }));
+  const selectedOptions = (selected ?? []).map(tagId => {
+    const found = tags.find(t => t.id === tagId);
+    return found
+      ? { label: found.name, value: found.id }
+      : { label: tagId, value: tagId }; // fallback jika tidak ditemukan
+  });
 
-  function handleMultiChange(sel: { label: string; value: string }[]) {
-    const arr = sel.map(s => {
-      const found = tags.find(t => t.id === s.value);
-      return found ?? { id: s.value, name: s.label };
-    });
-    onChange(arr);
-  }
+  const handleChange = (selectedOptions: { label: string; value: string }[]) => {
+    const tagIds = selectedOptions.map(opt => opt.value);
+    onChange(tagIds);
+  };
 
   return (
-    <MultiSelect
-      options={options}
-      selected={selectedOptions}
-      onChange={handleMultiChange}
-      placeholder="Pilih tag"
-    />
+    <div className="mb-4">
+      <label className="block text-sm font-medium mb-1">Tag</label>
+      <MultiSelect
+        options={options}
+        selected={selectedOptions}
+        onChange={handleChange}
+        placeholder="Pilih tag"
+      />
+    </div>
   );
     }
