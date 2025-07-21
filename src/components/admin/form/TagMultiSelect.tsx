@@ -1,4 +1,3 @@
-import { useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 import { supabase } from "@/lib/supabase";
 import { MultiSelect } from '@/components/ui/multi-select';
@@ -14,7 +13,6 @@ interface TagMultiSelectProps {
 }
 
 export function TagMultiSelect({ selected = [], onChange }: TagMultiSelectProps) {
-  const formik = useFormikContext<any>();
   const [tags, setTags] = useState<TagOption[]>([]);
 
   useEffect(() => {
@@ -59,4 +57,4 @@ export function TagMultiSelect({ selected = [], onChange }: TagMultiSelectProps)
       />
     </div>
   );
-      }
+}
