@@ -1,102 +1,85 @@
-import * as React from "react"
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Badge } from "@/components/ui/badge"
-import { X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+// src/components/admin/form/TagMultiSelect.tsx
+import { useEffect, useState } from "react";
+import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-export type TagOption = {
-  id: string
-  name: string
+export interface TagOption {
+  id: string;
+  name: string;
 }
 
 interface TagMultiSelectProps {
-  selected: TagOption[]
-  onChange: (selected: TagOption[]) => void
+  selected: TagOption[];
+  onChange: (tags: TagOption[]) => void;
 }
 
 export function TagMultiSelect({ selected, onChange }: TagMultiSelectProps) {
-  const [open, setOpen] = React.useState(false)
-  const [search, setSearch] = React.useState("")
-  const [tagOptions, setTagOptions] = React.useState<TagOption[]>([])
+  const [tags, setTags] = useState<TagOption[]>([]);
+  const [open, setOpen] = useState(false);
 
-  // Fetch all tag options from Supabase
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchTags = async () => {
-      try {
-        const res = await fetch("/api/tags") // ganti kalau kamu punya endpoint khusus
-        const data = await res.json()
-        if (data?.tags) {
-          setTagOptions(data.tags)
-        }
-      } catch (error) {
-        console.error("Failed to fetch tags", error)
-      }
-    }
-
-    fetchTags()
-  }, [])
-
-  const filteredTags = tagOptions.filter(tag =>
-    tag.name.toLowerCase().includes(search.toLowerCase())
-  )
+      const { data, error } = await supabase.from("tags").select("id, name");
+      if (!error && data) setTags(data);
+    };
+    fetchTags();
+  }, []);
 
   const toggleTag = (tag: TagOption) => {
-    const exists = selected.find(t => t.id === tag.id)
-    if (exists) {
-      onChange(selected.filter(t => t.id !== tag.id))
+    if (selected.some((t) => t.id === tag.id)) {
+      onChange(selected.filter((t) => t.id !== tag.id));
     } else {
-      onChange([...selected, tag])
+      onChange([...selected, tag]);
     }
-  }
+  };
+
+  const removeTag = (tagId: string) => {
+    onChange(selected.filter((t) => t.id !== tagId));
+  };
 
   return (
     <div>
+      <label className="block text-sm font-medium mb-1">Tags</label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-start">
-            {selected.length > 0 ? (
-              <div className="flex flex-wrap gap-1">
-                {selected.map(tag => (
-                  <Badge key={tag.id} className="flex items-center gap-1">
-                    {tag.name}
-                    <X
-                      className="w-3 h-3 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleTag(tag)
-                      }}
-                    />
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <span>Pilih tag...</span>
-            )}
+            {selected.length > 0
+              ? `${selected.length} tag dipilih`
+              : "Pilih tags"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0">
+        <PopoverContent className="w-full p-0">
           <Command>
-            <CommandInput placeholder="Cari tag..." value={search} onValueChange={setSearch} />
+            <CommandInput placeholder="Cari tag..." />
             <CommandList>
-              <CommandGroup>
-                {filteredTags.map(tag => (
-                  <CommandItem
-                    key={tag.id}
-                    value={tag.name}
-                    onSelect={() => toggleTag(tag)}
-                  >
-                    {tag.name}
-                    {selected.find(t => t.id === tag.id) && (
-                      <span className="ml-auto text-green-500">✓</span>
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              {tags.map((tag) => (
+                <CommandItem
+                  key={tag.id}
+                  value={tag.name}
+                  onSelect={() => toggleTag(tag)}
+                >
+                  {selected.some((t) => t.id === tag.id) ? "✓ " : ""} {tag.name}
+                </CommandItem>
+              ))}
             </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
+
+      <div className="flex flex-wrap gap-2 mt-2">
+        {selected.map((tag) => (
+          <Badge key={tag.id} variant="secondary" className="flex items-center gap-1">
+            {tag.name}
+            <button onClick={() => removeTag(tag.id)}>
+              <X className="h-3 w-3" />
+            </button>
+          </Badge>
+        ))}
+      </div>
     </div>
-  )
-      }
+  );
+             }
