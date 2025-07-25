@@ -46,7 +46,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
           ))}
         </SelectContent>
       </Select>
-
+console.log("📌 CategorySelect component loaded");
       {isEmpty && (
         <p className="text-sm text-red-500 mt-1">
           Tidak ada kategori tersedia.
