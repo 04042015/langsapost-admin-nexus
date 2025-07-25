@@ -45,4 +45,4 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
       </SelectContent>
     </Select>
   );
-      }
+        }
