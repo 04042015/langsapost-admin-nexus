@@ -52,6 +52,13 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
           Tidak ada kategori tersedia.
         </p>
       )}
+
+      {/* DEBUG LOG (development only) */}
+      {process.env.NODE_ENV !== 'production' && (
+        <pre className="text-xs text-left bg-gray-100 p-2 mt-4 rounded overflow-x-auto">
+{JSON.stringify({ categories, value }, null, 2)}
+        </pre>
+      )}
     </div>
   );
 };
