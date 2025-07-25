@@ -40,11 +40,11 @@ export function ArticleForm() {
   setLoadingCategories(true);
   const { data, error } = await supabase
     .from("categories")
-    .select("uuid, name");
+    .select("id, name"); // Ganti "uuid" jadi "id"
 
   if (!error && data) {
     const formatted = data.map((cat) => ({
-      id: cat.uuid, // rename
+      id: cat.id, // ganti juga dari cat.uuid
       name: cat.name,
     }));
     setCategories(formatted);
