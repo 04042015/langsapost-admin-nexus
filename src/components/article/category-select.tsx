@@ -20,7 +20,9 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase.from('categories').select('*').order('name');
+      console.log("Kategori dari Supabase:", data);
       if (!error && data) setCategories(data);
+      if (error) console.error("Gagal ambil kategori:", error);
     };
     fetchData();
   }, []);
@@ -31,12 +33,16 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
         <SelectValue placeholder="Pilih kategori" />
       </SelectTrigger>
       <SelectContent>
-        {categories.map((cat) => (
-          <SelectItem key={cat.id} value={cat.id}>
-            {cat.name}
-          </SelectItem>
-        ))}
+        {categories.length === 0 ? (
+          <div className="p-2 text-sm text-gray-500">Belum ada kategori tersedia</div>
+        ) : (
+          categories.map((cat) => (
+            <SelectItem key={cat.id} value={cat.id.toString()}>
+              {cat.name}
+            </SelectItem>
+          ))
+        )}
       </SelectContent>
     </Select>
   );
-}
+      }
