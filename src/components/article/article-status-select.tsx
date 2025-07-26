@@ -11,7 +11,7 @@ export function ArticleStatusSelect({ value, onChange }: ArticleStatusSelectProp
       <SelectTrigger>
         <SelectValue placeholder="Status artikel" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent position="popper" avoidCollisions={false}>
         <SelectItem value="draft">Draft</SelectItem>
         <SelectItem value="scheduled">Terjadwal</SelectItem>
         <SelectItem value="published">Publish</SelectItem>
