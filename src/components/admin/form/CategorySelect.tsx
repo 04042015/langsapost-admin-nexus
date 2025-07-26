@@ -37,8 +37,9 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
           <SelectValue
             placeholder={isEmpty ? 'Kategori belum tersedia' : 'Pilih kategori'}
           />
+    
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent position="popper" avoidCollisions={false}>
           {categories.map((category) => (
             <SelectItem key={category.id} value={category.id}>
               {category.name}
