@@ -38,19 +38,29 @@ export function ArticleForm() {
   useEffect(() => {
     const fetchCategories = async () => {
   setLoadingCategories(true);
+  coconst fetchCategories = async () => {
+  setLoadingCategories(true);
+
   const { data, error } = await supabase
     .from("categories")
-    .select("id, name"); // Ganti "uuid" jadi "id"
+    .select("id, name")
+    .eq("is_active", true); // Filter hanya kategori aktif
 
-  if (!error && data) {
+  if (!error && data && data.length > 0) {
     const formatted = data.map((cat) => ({
-      id: cat.id, // ganti juga dari cat.uuid
+      id: cat.id,
       name: cat.name,
     }));
     setCategories(formatted);
+
+    // ✅ Set default kategori kalau belum dipilih
+    if (!formik.values.category_id) {
+      formik.setFieldValue("category_id", formatted[0].id);
+    }
   } else {
     console.error("Gagal ambil kategori:", error);
   }
+
   setLoadingCategories(false);
 };
     fetchCategories();
