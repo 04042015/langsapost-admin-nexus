@@ -38,9 +38,7 @@ export function ArticleForm() {
   useEffect(() => {
     const fetchCategories = async () => {
   setLoadingCategories(true);
-  coconst fetchCategories = async () => {
-  setLoadingCategories(true);
-
+  
   const { data, error } = await supabase
     .from("categories")
     .select("id, name")
