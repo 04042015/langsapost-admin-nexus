@@ -24,6 +24,9 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
   disabled = false,
 }) => {
   const isEmpty = categories.length === 0;
+  <div className="mt-2 text-xs text-gray-600">
+  Current selected ID: <code>{value}</code>
+</div>
 
   return (
     <div className="mb-4">
