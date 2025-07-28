@@ -1,5 +1,5 @@
 import { ArticleForm } from "@/components/admin/article/ArticleForm";
-import { createClient } from "@/utils/supabase/server"; // pastikan ini benar
+import { supabase } from "@/lib/supabase";
 import { Category } from "@/types"; // atau path sesuai definisi Category-mu
 
 export default async function NewArticlePage() {
