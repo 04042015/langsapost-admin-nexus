@@ -35,35 +35,6 @@ export function ArticleForm() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-  setLoadingCategories(true);
-  
-  const { data, error } = await supabase
-    .from("categories")
-    .select("id, name")
-    .eq("is_active", true); // Filter hanya kategori aktif
-
-  if (!error && data && data.length > 0) {
-    const formatted = data.map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-    }));
-    setCategories(formatted);
-
-    // ✅ Set default kategori kalau belum dipilih
-    if (!formik.values.category_id) {
-      formik.setFieldValue("category_id", formatted[0].id);
-    }
-  } else {
-    console.error("Gagal ambil kategori:", error);
-  }
-
-  setLoadingCategories(false);
-};
-    fetchCategories();
-  }, []);
-
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -93,8 +64,8 @@ export function ArticleForm() {
       try {
         const payload = {
           ...values,
-  tag_ids: values.tag_ids.map(tag => tag.id), // <--- ubah di sini
-  lang,
+          tag_ids: values.tag_ids.map(tag => tag.id),
+          lang,
           author_id: "admin-123", // Ganti dengan ID user login
         };
 
@@ -113,6 +84,39 @@ export function ArticleForm() {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name")
+        .eq("is_active", true);
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const formatted = data.map((cat) => ({
+          id: cat.id,
+          name: cat.name,
+        }));
+
+        setCategories(formatted);
+
+        // 🔐 Hindari race condition: delay setting nilai
+        if (!formik.values.category_id) {
+          setTimeout(() => {
+            formik.setFieldValue("category_id", formatted[0].id);
+          }, 0);
+        }
+      } else {
+        console.error("Gagal ambil kategori:", error);
+      }
+
+      setLoadingCategories(false);
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (formik.values.title && !formik.values.slug) {
@@ -167,7 +171,9 @@ export function ArticleForm() {
           <div>
             <FeaturedImageUpload
               value={formik.values.featured_image_url}
-              onChange={(file) => formik.setFieldValue("featured_image_url", file)}
+              onChange={(file) =>
+                formik.setFieldValue("featured_image_url", file)
+              }
             />
           </div>
 
@@ -178,8 +184,10 @@ export function ArticleForm() {
               onChange={(v) => formik.setFieldValue("category_id", v)}
             />
             <TagMultiSelect
-                selected={formik.values.tag_ids}
-                onChange={(newTags) => formik.setFieldValue("tag_ids", newTags)}
+              selected={formik.values.tag_ids}
+              onChange={(newTags) =>
+                formik.setFieldValue("tag_ids", newTags)
+              }
             />
           </div>
 
@@ -267,14 +275,19 @@ export function ArticleForm() {
               Simpan sebagai Draft
             </Button>
           </div>
+
+          {/* DEBUG */}
           {!loadingCategories && (
-  <div className="bg-yellow-50 p-4 rounded text-sm text-gray-800 border border-yellow-300">
-    <h2 className="font-semibold mb-2">DEBUG KATEGORI:</h2>
-    <pre>{JSON.stringify(categories, null, 2)}</pre>
-  </div>
-)}
+            <div className="bg-yellow-50 p-4 rounded text-sm text-gray-800 border border-yellow-300">
+              <h2 className="font-semibold mb-2">DEBUG KATEGORI:</h2>
+              <pre>{JSON.stringify(categories, null, 2)}</pre>
+              <hr className="my-2" />
+              <h2 className="font-semibold mb-2">DEBUG FORM VALUES:</h2>
+              <pre>{JSON.stringify(formik.values, null, 2)}</pre>
+            </div>
+          )}
         </div>
       </MultiLangTabs>
     </form>
   );
-            }
+    }
