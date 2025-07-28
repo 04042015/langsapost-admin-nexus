@@ -37,11 +37,16 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
         disabled={disabled || isEmpty}
       >
         <SelectTrigger className="w-full">
-          <SelectValue
-            placeholder={isEmpty ? 'Kategori belum tersedia' : 'Pilih kategori'}
-          />
-    
-        </SelectTrigger>
+  <SelectValue
+    placeholder={isEmpty ? 'Kategori belum tersedia' : 'Pilih kategori'}
+  />
+  {/* DEBUG: Tampilkan value */}
+  {value && (
+    <span className="text-xs ml-2 text-gray-500">
+      (ID: {value})
+    </span>
+  )}
+</SelectTrigger>
         <SelectContent position="popper" avoidCollisions={false}>
           {categories.map((category) => (
             <SelectItem key={category.id} value={category.id}>
