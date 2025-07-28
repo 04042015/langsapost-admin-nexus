@@ -267,6 +267,12 @@ export function ArticleForm() {
               Simpan sebagai Draft
             </Button>
           </div>
+          {!loadingCategories && (
+  <div className="bg-gray-100 p-4 rounded text-sm text-gray-800">
+    <strong>Debug Kategori:</strong>
+    <pre>{JSON.stringify(categories, null, 2)}</pre>
+  </div>
+)}
         </div>
       </MultiLangTabs>
     </form>
